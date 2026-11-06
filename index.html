@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Acc Sam</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { background-color: #1a1a2e; color: #fff; font-family: Arial, sans-serif; padding: 15px; }
+        .acc-card { background: #16213e; border-radius: 10px; padding: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #0f3460; }
+        .acc-info h3 { margin: 0 0 5px 0; color: #e94560; }
+        .acc-info p { margin: 0; font-size: 13px; color: #aaa; }
+        .buy-btn { background: #e94560; color: white; border: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center; color: #e94560;">SHOP ACC FREE FIRE</h2>
+    
+    <div class="acc-card">
+        <div class="acc-info">
+            <h3>Acc Thường - 50k</h3>
+            <p>Rank Kim Cương | Nhiều skin</p>
+        </div>
+        <button class="buy-btn" onclick="muaAcc('Acc Thuong 50k')">Mua</button>
+    </div>
+
+    <div class="acc-card">
+        <div class="acc-info">
+            <h3>Acc VIP - 150k</h3>
+            <p>Rank Cao Thủ | Skin súng đỏ</p>
+        </div>
+        <button class="buy-btn" onclick="muaAcc('Acc VIP 150k')">Mua</button>
+    </div>
+
+    <script>
+        function muaAcc(tenAcc) {
+            let usernameTelegram = "TrTanStore_bot"; 
+            let text = encodeURIComponent("Chào shop, t muốn mua: " + tenAcc);
+            window.open(`https://t.me/${usernameTelegram}?text=${text}`, '_blank');
+        }
+    </script>
+</body>
+</html>
