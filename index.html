@@ -3,36 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shop Acc Sam</title>
+    <title>TrTan Store</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { background-color: #1a1a2e; color: #fff; font-family: Arial, sans-serif; padding: 15px; }
-        .acc-card { background: #16213e; border-radius: 10px; padding: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #0f3460; }
-        .acc-info h3 { margin: 0 0 5px 0; color: #e94560; }
-        .acc-info p { margin: 0; font-size: 13px; color: #aaa; }
-        .buy-btn { background: #e94560; color: white; border: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; }
+        :root {
+            --bg-color: #0f0f13;
+            --card-bg: #1c1c24;
+            --text-main: #ffffff;
+            --text-sub: #8b8b9a;
+            --accent: #ff4757;
+            --accent-gradient: linear-gradient(135deg, #ff4757, #ff6b81);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; padding: 20px; padding-bottom: 80px; }
+        
+        /* Header */
+        .header { text-align: center; margin-bottom: 25px; margin-top: 10px;}
+        .header h1 { font-size: 24px; font-weight: 800; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; text-transform: uppercase; }
+        .header p { font-size: 13px; color: var(--text-sub); margin-top: 5px; }
+
+        /* Product Card */
+        .product-card { background-color: var(--card-bg); border-radius: 16px; padding: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); transition: transform 0.2s; }
+        .product-card:active { transform: scale(0.98); }
+        
+        /* Product Info */
+        .info { flex: 1; padding-right: 15px; }
+        .info h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+        .info .desc { font-size: 13px; color: var(--text-sub); margin-bottom: 10px; line-height: 1.4; }
+        
+        /* Tags */
+        .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { background-color: rgba(255, 71, 87, 0.1); color: var(--accent); font-size: 11px; padding: 4px 10px; border-radius: 6px; font-weight: 600; border: 1px solid rgba(255, 71, 87, 0.2); }
+
+        /* Buy Button */
+        .btn-buy { background: var(--accent-gradient); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 10px rgba(255, 71, 87, 0.3); transition: 0.2s; }
+        .btn-buy:active { opacity: 0.8; }
+        
+        /* Bottom Menu */
+        .bottom-menu { position: fixed; bottom: 0; left: 0; width: 100%; background-color: rgba(28, 28, 36, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid rgba(255,255,255,0.05); }
+        .menu-item { color: var(--text-sub); text-align: center; font-size: 11px; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .menu-item.active { color: var(--accent); }
+        .menu-item span { font-size: 20px; }
     </style>
 </head>
 <body>
-    <h2 style="text-align: center; color: #e94560;">SHOP ACC FREE FIRE</h2>
-    
-    <div class="acc-card">
-        <div class="acc-info">
-            <h3>Acc Thường - 50k</h3>
-            <p>Rank Kim Cương | Nhiều skin</p>
-        </div>
-        <button class="buy-btn" onclick="muaAcc('Acc Thuong 50k')">Mua</button>
+
+    <div class="header">
+        <h1>TRTAN STORE</h1>
+        <p>Hệ thống cung cấp Acc Game uy tín</p>
     </div>
 
-    <div class="acc-card">
-        <div class="acc-info">
-            <h3>Acc VIP - 150k</h3>
-            <p>Rank Cao Thủ | Skin súng đỏ</p>
+    <!-- Sản phẩm 1 -->
+    <div class="product-card">
+        <div class="info">
+            <h3>Acc Thường - 50k</h3>
+            <div class="desc">Rank Kim Cương, trắng thông tin, bao đổi mật khẩu.</div>
+            <div class="tags">
+                <span class="tag">Free Fire</span>
+                <span class="tag">Kim Cương</span>
+            </div>
         </div>
-        <button class="buy-btn" onclick="muaAcc('Acc VIP 150k')">Mua</button>
+        <button class="btn-buy" onclick="muaAcc('Acc Thuong 50k')">Mua</button>
+    </div>
+
+    <!-- Sản phẩm 2 -->
+    <div class="product-card">
+        <div class="info">
+            <h3>Acc VIP - 150k</h3>
+            <div class="desc">Rank Cao Thủ, full skin súng đỏ, nhiều nhân vật.</div>
+            <div class="tags">
+                <span class="tag">Free Fire</span>
+                <span class="tag">Cao Thủ</span>
+                <span class="tag">Hot</span>
+            </div>
+        </div>
+        <button class="btn-buy" onclick="muaAcc('Acc VIP 150k')">Mua</button>
+    </div>
+
+    <!-- Thanh menu dưới cùng -->
+    <div class="bottom-menu">
+        <a href="#" class="menu-item active">
+            <span>🛒</span> Cửa hàng
+        </a>
+        <a href="#" class="menu-item" onclick="window.open('https://t.me/TrTanStore_bot')">
+            <span>💬</span> Hỗ trợ
+        </a>
     </div>
 
     <script>
+        // Khởi tạo Telegram WebApp
+        let tg = window.Telegram.WebApp;
+        tg.expand(); // Mở rộng toàn màn hình
+        tg.setHeaderColor('#0f0f13'); // Đổi màu thanh tiêu đề
+
         function muaAcc(tenAcc) {
             let usernameTelegram = "TrTanStore_bot"; 
             let text = encodeURIComponent("Chào shop, t muốn mua: " + tenAcc);
