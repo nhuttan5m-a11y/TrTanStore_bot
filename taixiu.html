@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tài Xỉu Mini Game</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: #0b0b0f; color: #fff; padding-bottom: 30px; overflow-x: hidden; }
+
+        /* Header */
+        .header { padding: 15px; display: flex; justify-content: space-between; align-items: center; background: #15151c; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 18px; font-weight: 800; color: #ff2a4b; text-transform: uppercase; }
+        .user-balance { background: rgba(255, 42, 75, 0.1); color: #ff2a4b; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 800; border: 1px solid rgba(255, 42, 75, 0.2); }
+
+        /* Game Area */
+        .game-container { padding: 15px; max-width: 600px; margin: 0 auto; }
+        .history-bar { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;}
+        .history-item { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; color: #fff; }
+        .history-tai { background: #10b981; }
+        .history-xiu { background: #ff2a4b; }
+
+        .countdown-box { text-align: center; margin-bottom: 20px; }
+        .countdown-box h2 { font-size: 14px; color: #8b8b99; text-transform: uppercase; margin-bottom: 5px; }
+        .countdown-timer { font-size: 36px; font-weight: 800; color: #fff; }
+        .countdown-timer span { color: #ff2a4b; }
+
+        /* Dice Area */
+        .dice-area { display: flex; justify-content: center; gap: 15px; margin: 30px 0; }
+        .dice { width: 70px; height: 70px; background: #fff; border-radius: 15px; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .dice i { font-size: 40px; color: #ff2a4b; }
+        .shake { animation: shake 0.5s infinite; }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        /* Betting Area */
+        .bet-area { background: #15151c; padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .chips { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .chip { padding: 8px 15px; background: rgba(255,255,255,0.1); border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; border: 1px solid transparent; transition: 0.2s; }
+        .chip.active { background: #ff2a4b; border-color: #ff2a4b; box-shadow: 0 4px 10px rgba(255, 42, 75, 0.4); }
+        
+        .actions { display: flex; gap: 15px; }
+        .btn-tai, .btn-xiu { flex: 1; padding: 15px; border: none; border-radius: 12px; font-size: 18px; font-weight: 800; color: #fff; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .btn-tai { background: #10b981; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+        .btn-xiu { background: #ff2a4b; box-shadow: 0 4px 15px rgba(255, 42, 75, 0.3); }
+        .btn-tai:active, .btn-xiu:active { transform: scale(0.95); }
+        .disabled { opacity: 0.5; pointer-events: none; }
+
+        /* Modal Kết Quả */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-box { background: #15151c; padding: 30px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.1); width: 80%; max-width: 320px; animation: pop 0.3s ease; }
+        @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .modal-icon { font-size: 60px; margin-bottom: 15px; }
+        .modal-title { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
+        .modal-text { font-size: 14px; color: #8b8b99; margin-bottom: 20px; }
+        .modal-btn { background: #fff; color: #000; border: none; padding: 10px 25px; border-radius: 20px; font-weight: 800; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">Tài Xỉu</div>
+        <div class="user-balance"><i class="fa-solid fa-wallet"></i> <span id="balanceDisplay">100000</span>đ</div>
+    </div>
+
+    <div class="game-container">
+        <!-- Lịch sử -->
+        <div class="history-bar" id="historyContainer">
+            <!-- Sẽ được điền bằng JS -->
+        </div>
+
+        <!-- Đồng hồ -->
+        <div class="countdown-box">
+            <h2>Thời gian đặt cược</h2>
+            <div class="countdown-timer" id="timerDisplay">30<span>s</span></div>
+        </div>
+
+        <!-- Xúc xắc -->
+        <div class="dice-area">
+            <div class="dice" id="dice1"><i class="fa-solid fa-dice-one"></i></div>
+            <div class="dice" id="dice2"><i class="fa-solid fa-dice-one"></i></div>
+            <div class="dice" id="dice3"><i class="fa-solid fa-dice-one"></i></div>
+        </div>
+
+        <!-- Bàn cược -->
+        <div class="bet-area">
+            <div class="chips">
+                <div class="chip active" onclick="selectChip(this, 10000)">10K</div>
+                <div class="chip" onclick="selectChip(this, 50000)">50K</div>
+                <div class="chip" onclick="selectChip(this, 100000)">100K</div>
+                <div class="chip" onclick="selectChip(this, 500000)">500K</div>
+            </div>
+            <div class="actions">
+                <button class="btn-tai" onclick="placeBet('tai')">TÀI</button>
+                <button class="btn-xiu" onclick="placeBet('xiu')">XỈU</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal thông báo -->
+    <div class="modal-overlay" id="resultModal">
+        <div class="modal-box">
+            <div class="modal-icon" id="modalIcon">🎉</div>
+            <div class="modal-title" id="modalTitle">Thắng</div>
+            <div class="modal-text" id="modalText">Bạn đã thắng 100.000đ</div>
+            <button class="modal-btn" onclick="closeModal()">Đóng</button>
+        </div>
+    </div>
+
+    <script>
+        // Khởi tạo Telegram WebApp
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.setHeaderColor('#0b0b0f');
+
+        // Biến toàn cục
+        let balance = parseInt(localStorage.getItem('tx_balance')) || 100000;
+        let currentChip = 10000;
+        let timeLeft = 30;
+        let canBet = true;
+        let hasBetted = false;
+        let history = JSON.parse(localStorage.getItem('tx_history')) || [];
+
+        const diceIcons = [
+            'fa-dice-one', 'fa-dice-two', 'fa-dice-three', 
+            'fa-dice-four', 'fa-dice-five', 'fa-dice-six'
+        ];
+
+        // Cập nhật số dư
+        function updateBalance() {
+            document.getElementById('balanceDisplay').innerText = balance.toLocaleString('vi-VN');
+            localStorage.setItem('tx_balance', balance);
+        }
+
+        // Render lịch sử
+        function renderHistory() {
+            const container = document.getElementById('historyContainer');
+            container.innerHTML = '';
+            history.slice(0, 10).forEach(item => {
+                const div = document.createElement('div');
+                div.className = `history-item ${item.type === 'tai' ? 'history-tai' : 'history-xiu'}`;
+                div.innerText = item.type === 'tai' ? 'T' : 'X';
+                container.appendChild(div);
+            });
+        }
+
+        // Chọn mức cược
+        function selectChip(el, amount) {
+            if (!canBet) return;
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            currentChip = amount;
+        }
+
+        // Đặt cược
+        function placeBet(type) {
+            if (!canBet || hasBetted) return;
+            if (balance < currentChip) {
+                showModal('❌', 'Lỗi', 'Số dư của bạn không đủ!', '#ff2a4b');
+                return;
+            }
+
+            // Trừ tiền
+            balance -= currentChip;
+            updateBalance();
+            
+            hasBetted = true;
+            canBet = false;
+            
+            // Disable nút
+            document.querySelectorAll('.btn-tai, .btn-xiu').forEach(btn => btn.classList.add('disabled'));
+
+            // Hiệu ứng xúc xắc lắc
+            const dices = document.querySelectorAll('.dice');
+            dices.forEach(d => d.classList.add('shake'));
+
+            // Random kết quả (1-6)
+            let r1 = Math.floor(Math.random() * 6) + 1;
+            let r2 = Math.floor(Math.random() * 6) + 1;
+            let r3 = Math.floor(Math.random() * 6) + 1;
+            let total = r1 + r2 + r3;
+            let resultType = (total >= 11 && total <= 17) ? 'tai' : 'xiu';
+
+            // Hiển thị kết quả sau 1.5s
+            setTimeout(() => {
+                dices.forEach(d => d.classList.remove('shake'));
+                
+                document.getElementById('dice1').innerHTML = `<i class="fa-solid ${diceIcons[r1-1]}"></i>`;
+                document.getElementById('dice2').innerHTML = `<i class="fa-solid ${diceIcons[r2-1]}"></i>`;
+                document.getElementById('dice3').innerHTML = `<i class="fa-solid ${diceIcons[r3-1]}"></i>`;
+
+                let win = (type === resultType);
+                
+                if (win) {
+                    balance += currentChip * 2;
+                    updateBalance();
+                    showModal('🎉', 'THẮNG', `Bạn nhận được ${(currentChip * 2).toLocaleString('vi-VN')}đ`, '#10b981');
+                } else {
+                    showModal('💀', 'THUA', `Bạn mất ${currentChip.toLocaleString('vi-VN')}đ`, '#ff2a4b');
+                }
+
+                // Lưu lịch sử
+                history.unshift({ type: resultType, total: total });
+                if (history.length > 20) history.pop();
+                localStorage.setItem('tx_history', JSON.stringify(history));
+                renderHistory();
+
+                hasBetted = false;
+
+            }, 1500);
+        }
+
+        // Hiển thị Modal
+        function showModal(icon, title, text, color) {
+            document.getElementById('modalIcon').innerText = icon;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalTitle').style.color = color;
+            document.getElementById('modalText').innerText = text;
+            document.getElementById('resultModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+
+        // Đồng hồ đếm ngược
+        setInterval(() => {
+            if (timeLeft <= 0) {
+                // Reset phiên
+                timeLeft = 30;
+                canBet = true;
+                document.getElementById('timerDisplay').innerHTML = `30<span>s</span>`;
+                document.querySelectorAll('.btn-tai, .btn-xiu').forEach(btn => btn.classList.remove('disabled'));
+                
+                // Reset xúc xắc
+                document.getElementById('dice1').innerHTML = `<i class="fa-solid fa-dice-one"></i>`;
+                document.getElementById('dice2').innerHTML = `<i class="fa-solid fa-dice-one"></i>`;
+                document.getElementById('dice3').innerHTML = `<i class="fa-solid fa-dice-one"></i>`;
+                
+                if(hasBetted) {
+                    closeModal();
+                    hasBetted = false;
+                }
+            } else {
+                if (timeLeft <= 5) canBet = false; // Khóa cược khi còn 5s
+                timeLeft--;
+                document.getElementById('timerDisplay').innerHTML = `${timeLeft}<span>s</span>`;
+            }
+        }, 1000);
+
+        // Khởi tạo
+        updateBalance();
+        renderHistory();
+
+    </script>
+</body>
+</html>
